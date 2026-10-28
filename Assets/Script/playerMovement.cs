@@ -25,13 +25,5 @@ public class playerMovement : MonoBehaviour
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
         rb.AddForce(movement * speed);
     }
-    void OnTriggerEnter(Collider other)
-    {
-        // Check if the player collided with a coin
-        other.gameObject.SetActive(false);
-        if (other.gameObject.CompareTag("Coin"))
-        {
-
-        }
-    }
+    
 }
