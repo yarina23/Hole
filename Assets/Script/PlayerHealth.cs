@@ -1,12 +1,13 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")] // the player's maximum and current health
     public int maxHealth = 3;
-    private int currentHealth;
+    public int currentHealth;
+
 
     [Header("Invulnerability Settings")]
     public float damageCooldown = 1.0f; // the cooldown after taking damage before the player can take damage again
