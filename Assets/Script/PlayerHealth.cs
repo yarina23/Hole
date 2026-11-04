@@ -8,10 +8,14 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 3;
     public int currentHealth;
 
+    public Manager manager; // reference to the Manager script to handle game over UI
 
     [Header("Invulnerability Settings")]
     public float damageCooldown = 1.0f; // the cooldown after taking damage before the player can take damage again
     private float lastHitTime = -1.0f;
+    private Renderer playerRenderer;
+    public Color flashColor = Color.red;
+    private Color originalColor;
 
     [Header("Fall Detection")]
     public float fallThresholdY = -2.0f; // whereby the player is considered to have fallen off the platform
@@ -24,6 +28,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         Debug.Log("Player spawned with " + currentHealth + " lives."); //debug message for me and me only TEMPORARY 
+        playerRenderer = GetComponent<Renderer>();
+        if (playerRenderer != null)
+        {
+            originalColor = playerRenderer.material.color;
+        }
     }
 
     void Update()
@@ -53,28 +62,40 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Ouch! Player hit. Lives remaining: " + currentHealth); //another debug for mw
 
+        if (playerRenderer != null)
+        {
+            StartCoroutine(FlashRoutine());
+        }
+
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
+    IEnumerator FlashRoutine()
+    {
+        // Flash red and back 3 times
+        for (int i = 0; i < 3; i++)
+        {
+            playerRenderer.material.color = flashColor;
+            yield return new WaitForSeconds(0.1f);
+            playerRenderer.material.color = originalColor;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
     void Die()
     {
         isDead = true;
-        Debug.Log("Game Over! Restarting level...");
+        Debug.Log("Game Over!");
 
-        // Disable movement
-        playerMovement movement = GetComponent<playerMovement>();
-        if (movement != null)
+        if (manager != null)
         {
-            movement.enabled = false;
+            manager.GameOver(); // Show Game Over UI
         }
-
-        StartCoroutine(RestartAfterDelay());
     }
 
-    IEnumerator RestartAfterDelay()
+        IEnumerator RestartAfterDelay()
     {
         yield return new WaitForSeconds(restartDelay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
