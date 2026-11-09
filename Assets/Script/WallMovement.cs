@@ -5,7 +5,10 @@ public class WallMovement : MonoBehaviour
     [SerializeField] private GameObject target;
     void Start()
     {
-        
+        if (target == null)
+        {
+            target = GameObject.Find("Target");
+        }
     }
 
     // Update is called once per frame
