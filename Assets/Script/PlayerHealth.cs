@@ -24,6 +24,7 @@ public class PlayerHealth : MonoBehaviour
     public float restartDelay = 1.0f; // seconds of delay before restarting the scene after death
     private bool isDead = false;
 
+    public CameraShake cameraShake;
     void Start()
     {
         currentHealth = maxHealth;
@@ -61,7 +62,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth -= damage;
         Debug.Log("Ouch! Player hit. Lives remaining: " + currentHealth); //another debug for mw
-
+ if (cameraShake != null)
+        {
+            // Shakes for 0.25 seconds with a strength of 0.3f
+            StartCoroutine(cameraShake.Shake(0.25f, 0.3f));
+        }
         if (playerRenderer != null)
         {
             StartCoroutine(FlashRoutine());
@@ -71,6 +76,7 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
+       
     }
 
     IEnumerator FlashRoutine()
